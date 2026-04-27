@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cloud ten Formation Maker</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         /* --- General Page Styles --- */
         body {
@@ -189,8 +190,9 @@
     <h1>Cloud ten Formation Maker</h1>
     
     <div id="controls">
-        <button onclick="resetFormation()">Reset Formation</button>
-    </div>
+            <button onclick="resetFormation()">Reset Formation</button>
+            <button onclick="downloadFormation()" style="background-color: #4CAF50; margin-left: 10px;">Download PNG</button>
+            </div>
 
     <div id="formation-canvas">
         <div class="row-wrapper">
@@ -398,7 +400,23 @@ function getDragAfterElement(container, x) {
             const rosterMembers = document.querySelectorAll('.member-slot');
             rosterMembers.forEach(m => m.classList.remove('is-selected'));
         }
-
+    function downloadFormation() {
+    const canvas = document.getElementById('formation-canvas');
+    
+    // Use html2canvas to capture the element
+    html2canvas(canvas, {
+        backgroundColor: "#f7f9fc", // Matches your body background
+        scale: 2, // Increases quality for high-res screens
+        logging: false,
+        useCORS: true // Vital if images come from a different folder/server
+    }).then(image => {
+        // Create a temporary link to trigger download
+        const link = document.createElement('a');
+        link.download = 'cloud-ten-formation.png';
+        link.href = image.toDataURL("image/png");
+        link.click();
+    });
+}
     </script>
 </body>
 </html>
