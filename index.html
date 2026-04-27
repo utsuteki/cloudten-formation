@@ -210,13 +210,11 @@
         }
         /* --- Admin Controls (Reset) --- */
        #controls {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: center;
-        gap: 15px;
-        margin-bottom: 25px;
-    }
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
 
 
     #canvas-title-display {
@@ -244,18 +242,35 @@
     font-family: inherit;
 }
         button {
-            padding: 10px 20px;
+            padding: 12px 25px;
             font-size: 16px;
-            background-color: #f44336;
-            color: white;
+            font-weight: 600;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        button:hover {
-            background-color: #d32f2f;
+        .btn-download {
+        background-color: #ffb7c5; /* Soft Pink */
+        color: white;
         }
+
+        .btn-download:hover {
+    background-color: #ff9eaa; /* Slightly deeper pink on hover */
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(255, 183, 197, 0.4);
+}
+
+/* Reset Button - Grey */
+.btn-reset {
+    background-color: #b0bec5; /* Muted Blue-Grey */
+    color: white;
+}
+        .btn-reset:hover {
+    background-color: #90a4ae;
+    transform: translateY(-1px);
+}
 
     </style>
 </head>
@@ -264,9 +279,9 @@
     <h1>Cloud ten Formation Maker</h1>
     
     <div id="controls">
-            <button onclick="resetFormation()">Reset Formation</button>
-            <button onclick="downloadFormation()" style="background-color: #4CAF50; margin-left: 10px;">Download PNG</button>
-            </div>
+    <button class="btn-reset" onclick="resetFormation()">Reset Formation</button>
+    <button class="btn-download" onclick="downloadFormation()">Download PNG</button>
+        </div>
             <div class="title-input-group">
         <label for="formation-title-input">Type the title:</label>
         <input type="text" id="formation-title-input" placeholder="e.g., Cloud ten 1st Single" oninput="updateTitle(this.value)">
