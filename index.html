@@ -93,7 +93,13 @@
             flex-shrink: 0; /* Prevents the row from squeezing the image if it gets crowded */
             transition: transform 0.2s, margin 0.2s;;
         }
-
+        /* Prevent the native popup on images */
+        .member-slot img, .member-slot {
+            -webkit-touch-callout: none; /* Prevents the "Save Image" popup on iOS */
+            -webkit-user-select: none;   /* Prevents text selection */
+            user-select: none;
+            touch-action: none;          /* Critical: Tells the browser the app handles the touch */
+        }
         /* We use !important to force the pale effect over any other styles */
         .member-slot.is-selected {
             opacity: 0.2 !important; /* One single, very pale look */
