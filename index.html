@@ -172,6 +172,21 @@
             cursor: grabbing;
         }
 
+        .member-slot {
+            position: relative; /* Essential for positioning icons */
+        }
+
+        /* For Centers */
+        .member-slot.is-center::after {
+            content: '⭐';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 20px;
+            filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));
+            z-index: 10;
+        }
+
         /* --- Admin Controls (Reset) --- */
        #controls {
         display: flex;
@@ -181,6 +196,22 @@
         gap: 15px;
         margin-bottom: 25px;
     }
+
+        /* The NEW Badge */
+        .member-slot.is-newcomer::before {
+            content: 'NEW';
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            background: #f44336;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 5px;
+            border-radius: 3px;
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
 
     #canvas-title-display {
     text-align: center;
@@ -402,13 +433,22 @@ function handleDrop(e) {
         const memberData = allMembers.find(m => m.id === droppedId);
         const formationMemberElement = createDraggableMemberElement(memberData);
         
-        formationMemberElement.classList.remove('is-selected');
-        formationMemberElement.style.opacity = '1';
-        
-        formationMemberElement.onclick = function() {
+        formationMemberElement.onclick = function(e) {
+        // If we click it once, make it a Center
+        if (!this.classList.contains('is-center') && !this.classList.contains('is-newcomer')) {
+            this.classList.add('is-center');
+        } 
+        // If it's already a center, make it a Newcomer
+        else if (this.classList.contains('is-center')) {
+            this.classList.remove('is-center');
+            this.classList.add('is-newcomer');
+        } 
+        // If it's a newcomer, remove it from the formation (original behavior)
+        else {
             existingElement.classList.remove('is-selected');
             this.remove();
-        };
+        }
+    };
 
         // Insert at the specific position
         if (afterElement == null) {
