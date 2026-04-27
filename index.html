@@ -225,26 +225,25 @@
         let currentlyDraggedId = null;
 
         // Function to create a clean member element (used in roster and formation)
-        function createDraggableMemberElement(memberData) {
-            const container = document.createElement('div');
-            container.classList.add('member-slot', 'roster-member');
-            container.id = memberData.id;
-            
-            // 1. Mark as draggable
-            container.setAttribute('draggable', 'true');
+function createDraggableMemberElement(memberData) {
+    const container = document.createElement('div');
+    container.classList.add('member-slot', 'roster-member');
+    container.id = memberData.id;
+    container.setAttribute('draggable', 'true');
 
-            // 2. Drag Start Listener
-            container.addEventListener('dragstart', (e) => {
-                currentlyDraggedId = memberData.id; // Store ID
-                e.dataTransfer.setData('text/plain', memberData.id); // Also standard data
-                container.style.opacity = '0.5'; // Visual feedback
-            });
-
-            // 3. Drag End Listener (Visual cleanup)
-            container.addEventListener('dragend', (e) => {
-                container.style.opacity = '1';
-                currentlyDraggedId = null;
-            });
+    container.addEventListener('dragstart', (e) => {
+        currentlyDraggedId = memberData.id;
+        e.dataTransfer.setData('text/plain', memberData.id);
+        
+        // NEW: Tell the event if this is a "rearrange" or a "new pick"
+        if (container.parentElement.classList.contains('formation-row')) {
+            e.dataTransfer.setData('source', 'canvas');
+        } else {
+            e.dataTransfer.setData('source', 'roster');
+        }
+        
+        container.style.opacity = '0.5';
+    });
 
             const img = document.createElement('img');
             img.src = memberData.image;
@@ -270,30 +269,43 @@
         }
 
        function handleDrop(e) {
-            e.preventDefault();
-            this.classList.remove('drag-over');
+    e.preventDefault();
+    this.classList.remove('drag-over');
+
+    const droppedId = e.dataTransfer.getData('text/plain');
+    const source = e.dataTransfer.getData('source');
+    if (!droppedId) return;
+
+    const existingElement = document.getElementById(droppedId);
+
+    // CASE A: Rearranging within the formation
+    if (source === 'canvas') {
+        // Just move the existing element to the new row/position
+        this.appendChild(existingElement);
+        return; 
+    }
+
+    // CASE B: Adding for the first time from roster
+    if (source === 'roster') {
+        if (existingElement.classList.contains('is-selected')) return;
+
+        existingElement.classList.add('is-selected');
+
+        const memberData = allMembers.find(m => m.id === droppedId);
+        const formationMemberElement = createDraggableMemberElement(memberData);
         
-            if (!currentlyDraggedId) return;
+        // Ensure the one in formation is fully visible and not 'is-selected'
+        formationMemberElement.classList.remove('is-selected');
+        formationMemberElement.style.opacity = '1';
         
-            // Find the original member in the bottom roster
-            const rosterMember = document.getElementById(currentlyDraggedId);
-            
-            // 1. Mark the roster member as selected (this triggers the pale CSS)
-            rosterMember.classList.add('is-selected');
-        
-            const memberData = allMembers.find(m => m.id === currentlyDraggedId);
-            const formationMemberElement = createDraggableMemberElement(memberData);
-            
-            formationMemberElement.setAttribute('draggable', 'false');
-            
-            // 2. When you click the formation image to remove it:
-            formationMemberElement.onclick = function() {
-                rosterMember.classList.remove('is-selected'); // Restore full color
-                this.remove(); // Remove from row
-            };
-        
-            this.appendChild(formationMemberElement);
-        }
+        formationMemberElement.onclick = function() {
+            existingElement.classList.remove('is-selected');
+            this.remove();
+        };
+
+        this.appendChild(formationMemberElement);
+    }
+}
 
         /* --- CONTROL FUNCTION --- */
         function resetFormation() {
