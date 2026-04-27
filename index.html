@@ -53,19 +53,17 @@
 
         /* --- Fixed Left Labels --- */
         .row-label {
-            writing-mode: vertical-rl;
-            transform: rotate(180deg);
-            text-transform: uppercase;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: bold;
             color: #90a4ae;
+            text-transform: uppercase;
             letter-spacing: 1px;
-            width: 30px; /* Fixed width for the label column */
+            width: 60px; /* Slightly wider to fit horizontal text */
+            text-align: center;
             user-select: none;
             pointer-events: none;
-            text-align: center;
+            line-height: 1.2;
         }
-
         .formation-row {
             flex-grow: 1; /* Takes up remaining space */
             min-height: 140px;
@@ -196,15 +194,15 @@
 
     <div id="formation-canvas">
         <div class="row-wrapper">
-            <div class="row-label">3rd Row</div>
+            <div class="row-label">3rd<br>Row</div>
             <div class="formation-row" data-row-id="3"></div>
         </div>
         <div class="row-wrapper">
-            <div class="row-label">2nd Row</div>
+            <div class="row-label">2nd<br>Row</div>
             <div class="formation-row" data-row-id="2"></div>
         </div>
         <div class="row-wrapper">
-            <div class="row-label">1st Row</div>
+            <div class="row-label">1st<br>Row</div>
             <div class="formation-row" data-row-id="1"></div>
         </div>
     </div>
@@ -400,17 +398,20 @@ function getDragAfterElement(container, x) {
             const rosterMembers = document.querySelectorAll('.member-slot');
             rosterMembers.forEach(m => m.classList.remove('is-selected'));
         }
+    
     function downloadFormation() {
     const canvas = document.getElementById('formation-canvas');
     
-    // Use html2canvas to capture the element
     html2canvas(canvas, {
-        backgroundColor: "#f7f9fc", // Matches your body background
-        scale: 2, // Increases quality for high-res screens
+        backgroundColor: "#ffffff", // Use pure white for a professional look
+        scale: 3, // Even higher resolution for printing/sharing
         logging: false,
-        useCORS: true // Vital if images come from a different folder/server
+        useCORS: true,
+        // This ensures the rounded corners of your canvas are respected
+        onclone: (clonedDoc) => {
+            clonedDoc.getElementById('formation-canvas').style.boxShadow = "none";
+        }
     }).then(image => {
-        // Create a temporary link to trigger download
         const link = document.createElement('a');
         link.download = 'cloud-ten-formation.png';
         link.href = image.toDataURL("image/png");
