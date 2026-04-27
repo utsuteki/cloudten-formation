@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idol Formation Builder</title>
+    <style>
+        /* --- General Page Styles --- */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f7f9fc;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1, h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        /* --- Formation Area (The "Canvas") --- */
+        #formation-canvas {
+            width: 90%;
+            max-width: 1000px;
+            min-height: 400px;
+            background-color: white;
+            border: 2px dashed #b0bec5;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+
+            /* KEY: We force a 3-row layout structure using CSS Grid */
+            display: grid;
+            grid-template-rows: repeat(3, 1fr);
+            gap: 15px; /* Space between rows */
+        }
+
+        /* --- Member Slot (General definition) --- */
+        .member-slot {
+            width: 100px;
+            height: 120px;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+
+        .member-slot:hover {
+            transform: scale(1.05);
+        }
+
+        .member-slot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Keeps aspect ratio correct */
+        }
+
+        /* --- Formation Rows --- */
+        .formation-row {
+            min-height: 120px;
+            border: 1px solid transparent; /* invisible target */
+            border-radius: 8px;
+
+            /* KEY: FLEXBOX for automatic centering of members within the row! */
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            gap: 10px; /* Space between members */
+        }
+
+        /* Styling to show the row is a drop target when hovering a dragged image */
+        .formation-row.drag-over {
+            border: 1px solid #2196F3;
+            background-color: rgba(33, 150, 243, 0.05);
+        }
+
+        /* --- Member Roster (Available Pool) --- */
+        #member-roster {
+            width: 90%;
+            max-width: 1000px;
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        #roster-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        /* The members in the roster are draggable */
+        .roster-member {
+            cursor: grab;
+        }
+
+        .roster-member:active {
+            cursor: grabbing;
+        }
+
+        /* --- Admin Controls (Reset) --- */
+        #controls {
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #d32f2f;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Idol Group Formation Builder</h1>
+    
+    <div id="controls">
+        <button onclick="resetFormation()">Reset Formation</button>
+    </div>
+
+    <div id="formation-canvas">
+        <div class="formation-row" data-row-id="1"></div>
+        <div class="formation-row" data-row-id="2"></div>
+        <div class="formation-row" data-row-id="3"></div>
+    </div>
+
+    <div id="member-roster">
+        <h2>Available Members (Drag to Formation)</h2>
+        <div id="roster-list">
+            </div>
+    </div>
+
+    <script>
+        /* --- CONFIGURATION --- */
+        
+        // Define your members here. 
+        // IMPORTANT: In a real website, you would put links to individual member photos (JPG/PNG).
+        // For this demo, I will use placeholder images.
+        const allMembers = [
+            { id: 'idol_01', name: 'Abe', image: './cloudten-formation/Abe.jpg' },
+            
+        ];
+
+        /* --- INITIALIZATION --- */
+
+        // Step 1: Initialize the available roster
+        const rosterListDiv = document.getElementById('roster-list');
+        allMembers.forEach(member => {
+            const memberDiv = createDraggableMemberElement(member);
+            rosterListDiv.appendChild(memberDiv);
+        });
+
+        // Step 2: Set up the drag and drop listeners for the formation rows
+        const formationRows = document.querySelectorAll('.formation-row');
+        formationRows.forEach(row => {
+            // Dragenter/over/leave: Control visual style
+            row.addEventListener('dragenter', handleDragEnter);
+            row.addEventListener('dragover', handleDragOver); // REQUIRED for drop to work
+            row.addEventListener('dragleave', handleDragLeave);
+            // Drop: The actual event
+            row.addEventListener('drop', handleDrop);
+        });
+
+        /* --- DRAG & DROP LOGIC --- */
+
+        let currentlyDraggedId = null;
+
+        // Function to create a clean member element (used in roster and formation)
+        function createDraggableMemberElement(memberData) {
+            const container = document.createElement('div');
+            container.classList.add('member-slot', 'roster-member');
+            container.id = memberData.id;
+            
+            // 1. Mark as draggable
+            container.setAttribute('draggable', 'true');
+
+            // 2. Drag Start Listener
+            container.addEventListener('dragstart', (e) => {
+                currentlyDraggedId = memberData.id; // Store ID
+                e.dataTransfer.setData('text/plain', memberData.id); // Also standard data
+                container.style.opacity = '0.5'; // Visual feedback
+            });
+
+            // 3. Drag End Listener (Visual cleanup)
+            container.addEventListener('dragend', (e) => {
+                container.style.opacity = '1';
+                currentlyDraggedId = null;
+            });
+
+            const img = document.createElement('img');
+            img.src = memberData.image;
+            img.alt = memberData.name;
+            container.appendChild(img);
+
+            return container;
+        }
+
+        // --- Drop Zone Listeners ---
+
+        function handleDragEnter(e) {
+            e.preventDefault();
+            this.classList.add('drag-over');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault(); // This is the single most important line for DnD
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+
+            if (!currentlyDraggedId) return;
+
+            const droppedMemberId = currentlyDraggedId;
+            const targetRowId = this.getAttribute('data-row-id');
+
+            // Find the member data and the source element
+            const memberData = allMembers.find(m => m.id === droppedMemberId);
+            const sourceElement = document.getElementById(droppedMemberId);
+
+            if (!memberData || !sourceElement) return;
+
+            // CORE LOGIC: Clone the member image to the formation area
+            // We clone so the member stays available in the roster.
+            const formationMemberElement = createDraggableMemberElement(memberData);
+            
+            // We want the elements in the formation to be visual only, not interactive 
+            // once placed, to keep it simple. Remove 'draggable' attributes.
+            formationMemberElement.setAttribute('draggable', 'false');
+            formationMemberElement.classList.remove('roster-member');
+            formationMemberElement.classList.add('formation-placed-member');
+            
+            // Handle unique ID conflict. When placing in formation, append "-placed"
+            // to the ID or simply remove the ID as we don't need it for dropping anymore.
+            formationMemberElement.removeAttribute('id');
+
+            // Add Click-to-remove listener
+            formationMemberElement.title = "Click to remove";
+            formationMemberElement.addEventListener('click', function() {
+                this.remove(); // Simple remove from the formation row
+            });
+
+            this.appendChild(formationMemberElement);
+            
+            // KEY: By simply appending the element using Flexbox CSS, 
+            // the row automatically recenters itself. No complex logic needed.
+        }
+
+        /* --- CONTROL FUNCTION --- */
+        function resetFormation() {
+            const rows = document.querySelectorAll('.formation-row');
+            rows.forEach(row => {
+                row.innerHTML = ''; // Clear all placed members
+            });
+        }
+
+    </script>
+</body>
+</html>
