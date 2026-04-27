@@ -322,6 +322,13 @@ function handleDrop(e) {
     e.preventDefault();
     this.classList.remove('drag-over');
 
+    // Define your limit here (e.g., 10 members per row)
+    const MAX_PER_ROW = 10;
+    if (this.querySelectorAll('.member-slot:not(.is-selected)').length >= MAX_PER_ROW) {
+        alert("This row is full! Try placing them in a different row.");
+        return;
+    }
+
     const droppedId = e.dataTransfer.getData('text/plain');
     const source = e.dataTransfer.getData('source');
     if (!droppedId) return;
