@@ -54,10 +54,12 @@
 
         /* Styling for members already in the formation */
         .member-slot.is-selected {
-            filter: grayscale(100%);
-            opacity: 0.5;
+            /* Brightness makes it whiter, Opacity makes it paler/transparent */
+            filter: brightness(1.3); 
+            opacity: 0.3;
             pointer-events: none; /* Prevents dragging them again */
             cursor: not-allowed;
+            transition: all 0.3s ease; /* Makes the fade-out look smooth */
 }
 
         .member-slot:hover {
