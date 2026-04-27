@@ -38,7 +38,50 @@
             grid-template-rows: repeat(3, min-content);
             gap: 15px; /* Space between rows */
         }
+        /* --- Row Container (Label + Row) --- */
+        .row-wrapper {
+            display: flex;
+            align-items: center;
+            min-height: 140px;
+            border-bottom: 1px dashed #eceff1;
+        }
 
+        .row-wrapper:last-child {
+            border-bottom: none;
+        }
+
+        /* --- Fixed Left Labels --- */
+        .row-label {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            text-transform: uppercase;
+            font-size: 11px;
+            font-weight: bold;
+            color: #90a4ae;
+            letter-spacing: 1px;
+            width: 30px; /* Fixed width for the label column */
+            user-select: none;
+            pointer-events: none;
+            text-align: center;
+        }
+
+        .formation-row {
+            flex-grow: 1; /* Takes up remaining space */
+            min-height: 140px;
+            display: flex;
+            justify-content: center; /* Centers the idols in the row */
+            align-items: center;
+            gap: 10px;
+            transition: background-color 0.2s;
+        }
+
+        .formation-row.drag-over {
+            background-color: rgba(33, 150, 243, 0.05);
+            outline: 2px dashed #2196F3;
+            border-radius: 8px;
+        }
+
+        
         /* --- Member Slot (General definition) --- */
         .member-slot {
             width: 100px; /* Match the original width and height */
@@ -53,18 +96,18 @@
         }
 
         /* We use !important to force the pale effect over any other styles */
-.member-slot.is-selected {
-    opacity: 0.2 !important; /* One single, very pale look */
-    filter: grayscale(100%); /* Optional: helps differentiate from the "active" ones */
-    pointer-events: none;
-    cursor: not-allowed;
-}
+        .member-slot.is-selected {
+            opacity: 0.2 !important; /* One single, very pale look */
+            filter: grayscale(100%); /* Optional: helps differentiate from the "active" ones */
+            pointer-events: none;
+            cursor: not-allowed;
+        }
 
 /* This stops the image from being ghost-dragged once it's pale */
 .is-selected img {
     pointer-events: none;
 }
-
+      
         .member-slot:hover {
             transform: scale(1.05);
         }
@@ -150,9 +193,18 @@
     </div>
 
     <div id="formation-canvas">
-        <div class="formation-row" data-row-id="1"></div>
-        <div class="formation-row" data-row-id="2"></div>
-        <div class="formation-row" data-row-id="3"></div>
+        <div class="row-wrapper">
+            <div class="row-label">3rd Row</div>
+            <div class="formation-row" data-row-id="3"></div>
+        </div>
+        <div class="row-wrapper">
+            <div class="row-label">2nd Row</div>
+            <div class="formation-row" data-row-id="2"></div>
+        </div>
+        <div class="row-wrapper">
+            <div class="row-label">1st Row</div>
+            <div class="formation-row" data-row-id="1"></div>
+        </div>
     </div>
 
     <div id="member-roster">
