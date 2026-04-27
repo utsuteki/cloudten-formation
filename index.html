@@ -178,7 +178,7 @@
 
         /* For Centers */
         .member-slot.is-center::after {
-           content: 'CENTER';
+           content: 'センター';
             position: absolute;
             bottom: 5px;
             left: 50%;
@@ -440,21 +440,26 @@ function handleDrop(e) {
         const formationMemberElement = createDraggableMemberElement(memberData);
         
         formationMemberElement.onclick = function(e) {
-        // If we click it once, make it a Center
-        if (!this.classList.contains('is-center') && !this.classList.contains('is-newcomer')) {
-            this.classList.add('is-center');
-        } 
-        // If it's already a center, make it a Newcomer
-        else if (this.classList.contains('is-center')) {
-            this.classList.remove('is-center');
-            this.classList.add('is-newcomer');
-        } 
-        // If it's a newcomer, remove it from the formation (original behavior)
-        else {
-            existingElement.classList.remove('is-selected');
-            this.remove();
-        }
-    };
+            // 1. If Normal -> Switch to CENTER
+            if (!this.classList.contains('is-center') && !this.classList.contains('is-newcomer')) {
+                this.classList.add('is-center');
+            } 
+            // 2. If CENTER -> Switch to NEW (初)
+            else if (this.classList.contains('is-center')) {
+                this.classList.remove('is-center');
+                this.classList.add('is-newcomer');
+            } 
+            // 3. If NEW (初) -> Switch back to Blank (Normal)
+            else if (this.classList.contains('is-newcomer')) {
+                this.classList.remove('is-newcomer');
+                // Now it is "blank" again
+            }
+            // 4. If clicked while Blank -> Remove from formation
+            else {
+                existingElement.classList.remove('is-selected');
+                this.remove();
+            }
+        };
 
         // Insert at the specific position
         if (afterElement == null) {
