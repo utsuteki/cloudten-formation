@@ -92,7 +92,7 @@
             justify-content: center;
             align-items: center;
             flex-shrink: 0; /* Prevents the row from squeezing the image if it gets crowded */
-            transition: transform 0.2s;
+            transition: transform 0.2s, margin 0.2s;;
         }
 
         /* We use !important to force the pale effect over any other styles */
@@ -318,7 +318,7 @@ function createDraggableMemberElement(memberData) {
             this.classList.remove('drag-over');
         }
 
-    function handleDrop(e) {
+function handleDrop(e) {
     e.preventDefault();
     this.classList.remove('drag-over');
 
@@ -328,35 +328,64 @@ function createDraggableMemberElement(memberData) {
 
     const existingElement = document.getElementById(droppedId);
 
+    // --- NEW: Insertion Logic ---
+    // Find all existing members in this row (except the one being dragged)
+    const afterElement = getDragAfterElement(this, e.clientX);
+    
     // CASE 1: Moving an image already in the formation (Rearranging)
     if (source === 'canvas') {
-        this.appendChild(existingElement); // This physically moves it, no duplication
+        if (afterElement == null) {
+            this.appendChild(existingElement);
+        } else {
+            this.insertBefore(existingElement, afterElement);
+        }
         return; 
     }
 
     // CASE 2: Adding a new member from the roster
     if (source === 'roster') {
-        // Stop if they are already pale/selected
         if (existingElement.classList.contains('is-selected')) return;
 
-        // Make the roster version pale
         existingElement.classList.add('is-selected');
-
         const memberData = allMembers.find(m => m.id === droppedId);
         const formationMemberElement = createDraggableMemberElement(memberData);
         
-        // Ensure the one we just put in the formation is NOT pale
         formationMemberElement.classList.remove('is-selected');
         formationMemberElement.style.opacity = '1';
         
-        // Remove functionality: click to delete and wake up the roster version
         formationMemberElement.onclick = function() {
             existingElement.classList.remove('is-selected');
             this.remove();
         };
 
-        this.appendChild(formationMemberElement);
+        // Insert at the specific position
+        if (afterElement == null) {
+            this.appendChild(formationMemberElement);
+        } else {
+            this.insertBefore(formationMemberElement, afterElement);
+        }
     }
+}
+
+/**
+ * Helper function to determine which element the mouse is currently "before"
+ */
+function getDragAfterElement(container, x) {
+    // Get all members in the row except the one currently being dragged
+    const draggableElements = [...container.querySelectorAll('.member-slot:not(.is-selected)')];
+
+    return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = x - box.left - box.width / 2; // Distance to the center of the element
+        
+        // We want the element where the offset is negative (mouse is to the left of the center)
+        // but closest to 0.
+        if (offset < 0 && offset > closest.offset) {
+            return { offset: offset, element: child };
+        } else {
+            return closest;
+        }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
 }
 
         /* --- CONTROL FUNCTION --- */
