@@ -174,18 +174,36 @@
 
         /* --- Admin Controls (Reset) --- */
        #controls {
-            margin-bottom: 20px;
             display: flex;
-            flex-wrap: wrap; /* Allows the input to drop to a second line on small phones */
-            gap: 10px;
-            justify-content: center;
-            align-items: center;
-            width: 95%;
-        }
-        
-        #formation-title-input {
-            flex-grow: 1; /* Allows the input to fill available space */
-            max-width: 400px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+    #canvas-title-display {
+    text-align: center;
+    font-size: 36px; /* Increased from 24px */
+    font-weight: 800;
+    margin-bottom: 30px;
+    color: #222;
+    min-height: 45px;
+    letter-spacing: -0.5px;
+}
+        .title-input-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+    color: #444;
+}
+       #formation-title-input {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #cfd8dc;
+    width: 250px;
+    font-family: inherit;
 }
         button {
             padding: 10px 20px;
@@ -211,7 +229,9 @@
             <button onclick="resetFormation()">Reset Formation</button>
             <button onclick="downloadFormation()" style="background-color: #4CAF50; margin-left: 10px;">Download PNG</button>
             </div>
-            <input type="text" id="formation-title-input" placeholder="Enter Formation Title..." oninput="updateTitle(this.value)" style="margin-left: 15px; padding: 10px; border-radius: 5px; border: 1px solid #ccc; width: 250px;">
+            <div class="title-input-group">
+        <label for="formation-title-input">Type the title:</label>
+        <input type="text" id="formation-title-input" placeholder="e.g., Cloud ten 1st Single" oninput="updateTitle(this.value)">
 
     <div id="formation-canvas">
 
