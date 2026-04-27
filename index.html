@@ -52,17 +52,18 @@
             transition: transform 0.2s;
         }
 
-        /* Styling for members already in the formation */
-       .member-slot.roster-member.is-selected {
-            opacity: 0.2; /* Much lower opacity makes it look paler against the white background */
-            filter: none; /* Removes any previous brightness filters */
-            pointer-events: none; 
-            cursor: not-allowed;
-        }
-        .is-selected img {
-            user-select: none;
-            -webkit-user-drag: none;
-        }
+        /* We use !important to force the pale effect over any other styles */
+.member-slot.is-selected {
+    opacity: 0.15 !important; 
+    filter: grayscale(80%) !important; /* Adds a slight grey to ensure it looks "gone" */
+    pointer-events: none !important;
+    cursor: not-allowed !important;
+}
+
+/* This stops the image from being ghost-dragged once it's pale */
+.is-selected img {
+    pointer-events: none;
+}
 
         .member-slot:hover {
             transform: scale(1.05);
