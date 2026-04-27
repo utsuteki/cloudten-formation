@@ -32,36 +32,22 @@
             padding: 20px;
             margin-bottom: 30px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-
-            /* KEY: We force a 3-row layout structure using CSS Grid */
             display: grid;
             grid-template-rows: repeat(3, min-content);
             gap: 15px; /* Space between rows */
-            <div id="formation-canvas">
-                <div class="formation-row" data-row-id="1">
-                <div class="row-label">3rd Row</div>
-                </div>
-            <div class="formation-row" data-row-id="2">
-                <div class="row-label">2nd Row</div>
-            </div>
-            <div class="formation-row" data-row-id="3">
-                <div class="row-label">1st Row</div>
-            </div>
-        </div>
-        }
 
         .row-label {
-    writing-mode: vertical-rl; /* Rotates the text */
-    transform: rotate(180deg); /* Flips it so it reads bottom-to-top */
-    text-transform: uppercase;
-    font-size: 12px;
-    font-weight: bold;
-    color: #90a4ae;
-    letter-spacing: 1px;
-    margin-right: 10px; /* Space between label and images */
-    user-select: none;
-    pointer-events: none; /* Prevents label from interfering with drags */
-}
+            writing-mode: vertical-rl; /* Rotates the text */
+            transform: rotate(180deg); /* Flips it so it reads bottom-to-top */
+            text-transform: uppercase;
+            font-size: 12px;
+            font-weight: bold;
+            color: #90a4ae;
+            letter-spacing: 1px;
+            margin-right: 10px; /* Space between label and images */
+            user-select: none;
+            pointer-events: none; /* Prevents label from interfering with drags */
+        }
 
 .formation-row {
     position: relative;
@@ -183,22 +169,26 @@
 </head>
 <body>
 
-    <h1>Idol Group Formation Builder</h1>
+    <h1>Cloud ten Formation Maker</h1>
     
     <div id="controls">
         <button onclick="resetFormation()">Reset Formation</button>
     </div>
 
     <div id="formation-canvas">
-        <div class="formation-row" data-row-id="1"></div>
-        <div class="formation-row" data-row-id="2"></div>
-        <div class="formation-row" data-row-id="3"></div>
+        <div class="formation-row" data-row-id="3">
+            <div class="row-label">3rd Row</div>
+        </div>
+        <div class="formation-row" data-row-id="2">
+            <div class="row-label">2nd Row</div>
+        </div>
+        <div class="formation-row" data-row-id="1">
+            <div class="row-label">1st Row</div>
+        </div>
     </div>
-
     <div id="member-roster">
-        <h2>Available Members (Drag to Formation)</h2>
-        <div id="roster-list">
-            </div>
+        <h2>Select Member</h2>
+        <div id="roster-list"></div>
     </div>
 
     <script>
