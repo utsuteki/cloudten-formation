@@ -7,7 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/drag-drop-touch-polyfill@1.4.1/dragdroptouch.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        /* --- General Page Styles --- */
+        /*--- General Page Styles ---*/
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f7f9fc;
@@ -16,7 +16,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* Prevents the 'pull-to-refresh' gesture from interrupting your drag */
+           
             overscroll-behavior-y: contain;
         }
 
@@ -25,7 +25,7 @@
             margin-bottom: 10px;
         }
 
-        /* --- Formation Area (The "Canvas") --- */
+        /* --- Formation Area --- */
         #formation-canvas {
             width: 95%;
             max-width: 1200px;
@@ -37,7 +37,7 @@
             margin-bottom: 30px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
 
-            /* KEY: We force a 3-row layout structure using CSS Grid */
+            /* 3-row layout structure using CSS Grid */
             display: grid;
             grid-template-rows: repeat(3, min-content);
             gap: 15px; /* Space between rows */
@@ -61,7 +61,7 @@
             color: #90a4ae;
             text-transform: uppercase;
             letter-spacing: 1px;
-            width: 60px; /* Slightly wider to fit horizontal text */
+            width: 60px;
             text-align: center;
             user-select: none;
             pointer-events: none;
@@ -83,8 +83,7 @@
             border-radius: 8px;
         }
 
-        
-        /* --- Member Slot (General definition) --- */
+        /* --- Member Slot --- */
         .member-slot {
             width: 100px; /* Match the original width and height */
             height: auto;
@@ -93,28 +92,27 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-shrink: 0; /* Prevents the row from squeezing the image if it gets crowded */
+            flex-shrink: 0; /* Preventing the row from squeezing the image if it gets crowded */
             transition: transform 0.2s, margin 0.2s;;
         }
-        /* Prevent the native popup on images */
+        /* For preventing pop up in mobile (useless) */
         .member-slot img, .member-slot {
-            -webkit-touch-callout: none; /* Prevents the "Save Image" popup on iOS */
-            -webkit-user-select: none;   /* Prevents text selection */
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;   
             user-select: none;
-            touch-action: none;          /* Critical: Tells the browser the app handles the touch */
+            touch-action: none; 
         }
-        /* We use !important to force the pale effect over any other styles */
+
         .member-slot.is-selected {
-            opacity: 0.2 !important; /* One single, very pale look */
-            filter: grayscale(100%); /* Optional: helps differentiate from the "active" ones */
+            opacity: 0.2 !important; 
+            filter: grayscale(100%); 
             pointer-events: none;
             cursor: not-allowed;
         }
 
-/* This stops the image from being ghost-dragged once it's pale */
-.is-selected img {
-    pointer-events: none;
-}
+        .is-selected img {
+        pointer-events: none;
+        }
       
         .member-slot:hover {
             transform: scale(1.05);
@@ -124,29 +122,27 @@
             width: 100%;
             height: auto;
             display: block;
-            object-fit: contain; /* This ensures the full image is visible without cropping */
+            object-fit: contain; 
         }
 
         /* --- Formation Rows --- */
         .formation-row {
             min-height: 140px;
-            border: 1px solid transparent; /* invisible target */
+            border: 1px solid transparent; 
             border-radius: 8px;
 
-            /* KEY: FLEXBOX for automatic centering of members within the row! */
             display: flex;
-            justify-content: center; /* Center horizontally */
-            align-items: center; /* Center vertically */
-            gap: 10px; /* Space between members */
+            justify-content: center; 
+            align-items: center; 
+            gap: 10px; 
         }
 
-        /* Styling to show the row is a drop target when hovering a dragged image */
         .formation-row.drag-over {
             border: 1px solid #2196F3;
             background-color: rgba(33, 150, 243, 0.05);
         }
 
-        /* --- Member Roster (Available Pool) --- */
+        /* --- Member Roster --- */
         #member-roster {
             width: 95%;
             max-width: 1200px;
@@ -173,17 +169,17 @@
         }
 
         .member-slot {
-            position: relative; /* Essential for positioning icons */
+            position: relative;
         }
 
-        /* For Centers */
+        /* Center Badge */
         .member-slot.is-center::after {
            content: 'センター';
             position: absolute;
             bottom: 5px;
             left: 50%;
-            transform: translateX(-50%); /* Centers the badge horizontally */
-            background: #D4AF37; /* Gold color */
+            transform: translateX(-50%); 
+            background: #D4AF37; /* This is gold */
             color: white;
             font-size: 9px;
             font-weight: bold;
@@ -193,11 +189,11 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.3);
             letter-spacing: 0.5px;
         }
-/* The NEW Badge */
+        /* New Senbatsu Badge */
         .member-slot.is-newcomer::before {
             content: '初';
             position: absolute;
-            top: 5px;    /* Moved from bottom to top */
+            top: 5px;
             left: 5px;
             background: #f44336; 
             color: white;
@@ -210,37 +206,38 @@
         }
         /* --- Admin Controls (Reset) --- */
        #controls {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 25px;
-}
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
 
-
-    #canvas-title-display {
-    text-align: center;
-    font-size: 36px; /* Your requested size */
-    font-weight: 800;
-    margin-bottom: 20px;
-    color: #222;
-    min-height: 45px;
-    letter-spacing: -0.5px;
-    width: 100%;
-    }
+        #canvas-title-display {
+            text-align: center;
+            font-size: 36px; 
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: #222;
+            min-height: 45px;
+            letter-spacing: -0.5px;
+            width: 100%;
+            }
+        
         .title-input-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: bold;
-    color: #444;
-}
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            color: #444;
+            }
+        
        #formation-title-input {
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #cfd8dc;
-    width: 250px;
-    font-family: inherit;
-}
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #cfd8dc;
+            width: 250px;
+            font-family: inherit;
+            }
         button {
             padding: 12px 25px;
             font-size: 16px;
@@ -251,33 +248,32 @@
             transition: all 0.3s ease;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+        
         .btn-download {
         background-color: #ffb7c5; /* Soft Pink */
         color: white;
         }
 
         .btn-download:hover {
-    background-color: #ff9eaa; /* Slightly deeper pink on hover */
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(255, 183, 197, 0.4);
-}
+            background-color: #ff9eaa; /* Slightly deeper pink on hover */
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(255, 183, 197, 0.4);
+        }
 
-/* Reset Button - Grey */
-.btn-reset {
-    background-color: #b0bec5; /* Muted Blue-Grey */
-    color: white;
-}
+        .btn-reset {
+            background-color: #b0bec5; /* Muted Blue-Grey */
+            color: white;
+        }
+        
         .btn-reset:hover {
-    background-color: #90a4ae;
-    transform: translateY(-1px);
-}
+            background-color: #90a4ae;
+            transform: translateY(-1px);
+        }
 
     </style>
 </head>
 <body>
-
     <h1>Cloud ten Formation Maker</h1>
-    
     <div id="controls">
     <button class="btn-reset" onclick="resetFormation()">Reset Formation</button>
     <button class="btn-download" onclick="downloadFormation()">Download PNG</button>
@@ -286,10 +282,11 @@
         <label for="formation-title-input">Type the title:</label>
         <input type="text" id="formation-title-input" placeholder="e.g., Cloud ten 1st Single" oninput="updateTitle(this.value)">
             </div>
+    
     <div id="formation-canvas">
-
-        <div id="canvas-title-display" style="text-align: center; font-size: 36px; font-weight: bold; margin-bottom: 20px; color: #333; min-height: 30px;"></div>
-        
+        <div id="canvas-title-display" style="text-align: center; font-size: 36px; font-weight: bold; margin-bottom: 20px; color: #333; min-height: 30px;">
+            
+        </div>
         <div class="row-wrapper">
             <div class="row-label">3rd<br>Row</div>
             <div class="formation-row" data-row-id="3"></div>
@@ -313,9 +310,8 @@
     <script>
         /* --- CONFIGURATION --- */
         
-        // Define your members here. 
-        // IMPORTANT: In a real website, you would put links to individual member photos (JPG/PNG).
-        // For this demo, I will use placeholder images.
+        // Member pics are defined here 
+        // Member pics are in ./images.
         const allMembers = [
             { id: 'idol_01', name: 'Abe', image: './images/abe.jpeg' },
             { id: 'idol_02', name: 'Fukami', image: './images/fukami.jpeg' },
@@ -350,58 +346,50 @@
         ];
 
         /* --- INITIALIZATION --- */
-
-        // Step 1: Initialize the available roster
         const rosterListDiv = document.getElementById('roster-list');
         allMembers.forEach(member => {
             const memberDiv = createDraggableMemberElement(member);
             rosterListDiv.appendChild(memberDiv);
         });
 
-        // Step 2: Set up the drag and drop listeners for the formation rows
         const formationRows = document.querySelectorAll('.formation-row');
         formationRows.forEach(row => {
-            // Dragenter/over/leave: Control visual style
             row.addEventListener('dragenter', handleDragEnter);
-            row.addEventListener('dragover', handleDragOver); // REQUIRED for drop to work
+            row.addEventListener('dragover', handleDragOver); 
             row.addEventListener('dragleave', handleDragLeave);
-            // Drop: The actual event
+            
             row.addEventListener('drop', handleDrop);
         });
 
-        /* --- DRAG & DROP LOGIC --- */
-
+        /* --- Drag & Drop --- */
         let currentlyDraggedId = null;
-
-        // Function to create a clean member element (used in roster and formation)
-function createDraggableMemberElement(memberData) {
-    const container = document.createElement('div');
-    container.classList.add('member-slot', 'roster-member');
-    container.id = memberData.id;
-    container.setAttribute('draggable', 'true');
-
-    container.addEventListener('dragstart', (e) => {
-    currentlyDraggedId = memberData.id;
-    e.dataTransfer.setData('text/plain', memberData.id);
-    
+        function createDraggableMemberElement(memberData) {
+            const container = document.createElement('div');
+            container.classList.add('member-slot', 'roster-member');
+            container.id = memberData.id;
+            container.setAttribute('draggable', 'true');
+        
+            container.addEventListener('dragstart', (e) => {
+            currentlyDraggedId = memberData.id;
+            e.dataTransfer.setData('text/plain', memberData.id);
+        
     // Check if the image we are dragging is already in a formation row
-    if (container.parentElement.classList.contains('formation-row')) {
-        e.dataTransfer.setData('source', 'canvas');
-    } else {
-        e.dataTransfer.setData('source', 'roster');
-    }
-});
+        if (container.parentElement.classList.contains('formation-row')) {
+            e.dataTransfer.setData('source', 'canvas');
+        } else {
+            e.dataTransfer.setData('source', 'roster');
+        }
+        });
     
-            const img = document.createElement('img');
-            img.src = memberData.image;
-            img.alt = memberData.name;
-            container.appendChild(img);
+        const img = document.createElement('img');
+        img.src = memberData.image;
+        img.alt = memberData.name;
+        container.appendChild(img);
 
-            return container;
+        return container;
         }
 
-        // --- Drop Zone Listeners ---
-
+        /* --- Drop Zone Listeners --- */
         function handleDragEnter(e) {
             e.preventDefault();
             this.classList.add('drag-over');
@@ -419,7 +407,7 @@ function handleDrop(e) {
     e.preventDefault();
     this.classList.remove('drag-over');
 
-    // Define your limit here (e.g., 10 members per row)
+    // Maximum number of member
     const MAX_PER_ROW = 10;
     if (this.querySelectorAll('.member-slot:not(.is-selected)').length >= MAX_PER_ROW) {
         alert("This row is full! Try placing them in a different row.");
@@ -432,7 +420,6 @@ function handleDrop(e) {
 
     const existingElement = document.getElementById(droppedId);
 
-    // --- NEW: Insertion Logic ---
     // Find all existing members in this row (except the one being dragged)
     const afterElement = getDragAfterElement(this, e.clientX);
     
@@ -484,9 +471,7 @@ function handleDrop(e) {
     }
 }
 
-/**
- * Helper function to determine which element the mouse is currently "before"
- */
+/* Helper function to determine which element the mouse is currently "before" */
 function getDragAfterElement(container, x) {
     // Get all members in the row except the one currently being dragged
     const draggableElements = [...container.querySelectorAll('.member-slot:not(.is-selected)')];
@@ -495,7 +480,7 @@ function getDragAfterElement(container, x) {
         const box = child.getBoundingClientRect();
         const offset = x - box.left - box.width / 2; // Distance to the center of the element
         
-        // We want the element where the offset is negative (mouse is to the left of the center)
+        // The element where the offset is negative (mouse is to the left of the center)
         // but closest to 0.
         if (offset < 0 && offset > closest.offset) {
             return { offset: offset, element: child };
@@ -507,40 +492,40 @@ function getDragAfterElement(container, x) {
 
         /* --- CONTROL FUNCTION --- */
         function updateTitle(value) {
-    const display = document.getElementById('canvas-title-display');
-    display.innerText = value;
-}
-        function resetFormation() {
-    const rows = document.querySelectorAll('.formation-row');
-    rows.forEach(row => row.innerHTML = '');
-    
-    const rosterMembers = document.querySelectorAll('.member-slot');
-    rosterMembers.forEach(m => m.classList.remove('is-selected'));
-
-    // Clear the title
-    document.getElementById('formation-title-input').value = '';
-    document.getElementById('canvas-title-display').innerText = '';
-}
-    
-    function downloadFormation() {
-    const canvas = document.getElementById('formation-canvas');
-    
-    html2canvas(canvas, {
-        backgroundColor: "#ffffff", // Use pure white for a professional look
-        scale: 3, // Even higher resolution for printing/sharing
-        logging: false,
-        useCORS: true,
-        // This ensures the rounded corners of your canvas are respected
-        onclone: (clonedDoc) => {
-            clonedDoc.getElementById('formation-canvas').style.boxShadow = "none";
+            const display = document.getElementById('canvas-title-display');
+            display.innerText = value;
         }
-    }).then(image => {
-        const link = document.createElement('a');
-        link.download = 'cloud-ten-formation.png';
-        link.href = image.toDataURL("image/png");
-        link.click();
-    });
-}
+        function resetFormation() {
+            const rows = document.querySelectorAll('.formation-row');
+            rows.forEach(row => row.innerHTML = '');
+    
+            const rosterMembers = document.querySelectorAll('.member-slot');
+            rosterMembers.forEach(m => m.classList.remove('is-selected'));
+        
+            // Clear the title
+            document.getElementById('formation-title-input').value = '';
+            document.getElementById('canvas-title-display').innerText = '';
+        }
+    
+        function downloadFormation() {
+            const canvas = document.getElementById('formation-canvas');
+    
+        html2canvas(canvas, {
+            backgroundColor: "#ffffff", // Use pure white for a professional look
+            scale: 3, // Even higher resolution for printing/sharing
+            logging: false,
+            useCORS: true,
+            // This ensures the rounded corners of your canvas are respected
+            onclone: (clonedDoc) => {
+                clonedDoc.getElementById('formation-canvas').style.boxShadow = "none";
+            }
+        }).then(image => {
+            const link = document.createElement('a');
+            link.download = 'cloud-ten-formation.png';
+            link.href = image.toDataURL("image/png");
+            link.click();
+        });
+        }
     
     </script>
 </body>
