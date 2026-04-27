@@ -54,10 +54,10 @@
 
         /* We use !important to force the pale effect over any other styles */
 .member-slot.is-selected {
-    opacity: 0.15 !important; 
-    filter: grayscale(80%) !important; /* Adds a slight grey to ensure it looks "gone" */
-    pointer-events: none !important;
-    cursor: not-allowed !important;
+    opacity: 0.2 !important; /* One single, very pale look */
+    filter: grayscale(100%); /* Optional: helps differentiate from the "active" ones */
+    pointer-events: none;
+    cursor: not-allowed;
 }
 
 /* This stops the image from being ghost-dragged once it's pale */
@@ -232,19 +232,17 @@ function createDraggableMemberElement(memberData) {
     container.setAttribute('draggable', 'true');
 
     container.addEventListener('dragstart', (e) => {
-        currentlyDraggedId = memberData.id;
-        e.dataTransfer.setData('text/plain', memberData.id);
-        
-        // NEW: Tell the event if this is a "rearrange" or a "new pick"
-        if (container.parentElement.classList.contains('formation-row')) {
-            e.dataTransfer.setData('source', 'canvas');
-        } else {
-            e.dataTransfer.setData('source', 'roster');
-        }
-        
-        container.style.opacity = '0.5';
-    });
-
+    currentlyDraggedId = memberData.id;
+    e.dataTransfer.setData('text/plain', memberData.id);
+    
+    // Check if the image we are dragging is already in a formation row
+    if (container.parentElement.classList.contains('formation-row')) {
+        e.dataTransfer.setData('source', 'canvas');
+    } else {
+        e.dataTransfer.setData('source', 'roster');
+    }
+});
+    
             const img = document.createElement('img');
             img.src = memberData.image;
             img.alt = memberData.name;
@@ -268,7 +266,7 @@ function createDraggableMemberElement(memberData) {
             this.classList.remove('drag-over');
         }
 
-       function handleDrop(e) {
+    function handleDrop(e) {
     e.preventDefault();
     this.classList.remove('drag-over');
 
@@ -278,26 +276,28 @@ function createDraggableMemberElement(memberData) {
 
     const existingElement = document.getElementById(droppedId);
 
-    // CASE A: Rearranging within the formation
+    // CASE 1: Moving an image already in the formation (Rearranging)
     if (source === 'canvas') {
-        // Just move the existing element to the new row/position
-        this.appendChild(existingElement);
+        this.appendChild(existingElement); // This physically moves it, no duplication
         return; 
     }
 
-    // CASE B: Adding for the first time from roster
+    // CASE 2: Adding a new member from the roster
     if (source === 'roster') {
+        // Stop if they are already pale/selected
         if (existingElement.classList.contains('is-selected')) return;
 
+        // Make the roster version pale
         existingElement.classList.add('is-selected');
 
         const memberData = allMembers.find(m => m.id === droppedId);
         const formationMemberElement = createDraggableMemberElement(memberData);
         
-        // Ensure the one in formation is fully visible and not 'is-selected'
+        // Ensure the one we just put in the formation is NOT pale
         formationMemberElement.classList.remove('is-selected');
         formationMemberElement.style.opacity = '1';
         
+        // Remove functionality: click to delete and wake up the roster version
         formationMemberElement.onclick = function() {
             existingElement.classList.remove('is-selected');
             this.remove();
