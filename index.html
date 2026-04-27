@@ -52,6 +52,14 @@
             transition: transform 0.2s;
         }
 
+        /* Styling for members already in the formation */
+        .member-slot.is-selected {
+            filter: grayscale(100%);
+            opacity: 0.5;
+            pointer-events: none; /* Prevents dragging them again */
+            cursor: not-allowed;
+}
+
         .member-slot:hover {
             transform: scale(1.05);
         }
@@ -259,50 +267,41 @@
         function handleDrop(e) {
             e.preventDefault();
             this.classList.remove('drag-over');
-
+        
             if (!currentlyDraggedId) return;
-
-            const droppedMemberId = currentlyDraggedId;
-            const targetRowId = this.getAttribute('data-row-id');
-
-            // Find the member data and the source element
-            const memberData = allMembers.find(m => m.id === droppedMemberId);
-            const sourceElement = document.getElementById(droppedMemberId);
-
-            if (!memberData || !sourceElement) return;
-
-            // CORE LOGIC: Clone the member image to the formation area
-            // We clone so the member stays available in the roster.
+        
+            // Find the original member in the ROSTER (the bottom list)
+            const rosterMember = document.getElementById(currentlyDraggedId);
+            
+            // If it's already greyed out, stop here
+            if (rosterMember.classList.contains('is-selected')) return;
+        
+            // 1. Mark the roster member as selected (turns it grey)
+            rosterMember.classList.add('is-selected');
+        
+            const memberData = allMembers.find(m => m.id === currentlyDraggedId);
             const formationMemberElement = createDraggableMemberElement(memberData);
             
-            // We want the elements in the formation to be visual only, not interactive 
-            // once placed, to keep it simple. Remove 'draggable' attributes.
             formationMemberElement.setAttribute('draggable', 'false');
-            formationMemberElement.classList.remove('roster-member');
-            formationMemberElement.classList.add('formation-placed-member');
             
-            // Handle unique ID conflict. When placing in formation, append "-placed"
-            // to the ID or simply remove the ID as we don't need it for dropping anymore.
-            formationMemberElement.removeAttribute('id');
-
-            // Add Click-to-remove listener
-            formationMemberElement.title = "Click to remove";
-            formationMemberElement.addEventListener('click', function() {
-                this.remove(); // Simple remove from the formation row
-            });
-
+            // 2. IMPORTANT: When removing from formation, turn the color back on!
+            formationMemberElement.onclick = function() {
+                rosterMember.classList.remove('is-selected'); // Remove grey
+                this.remove(); // Remove from row
+            };
+        
             this.appendChild(formationMemberElement);
-            
-            // KEY: By simply appending the element using Flexbox CSS, 
-            // the row automatically recenters itself. No complex logic needed.
         }
 
         /* --- CONTROL FUNCTION --- */
         function resetFormation() {
+            // Clear the rows
             const rows = document.querySelectorAll('.formation-row');
-            rows.forEach(row => {
-                row.innerHTML = ''; // Clear all placed members
-            });
+            rows.forEach(row => row.innerHTML = '');
+        
+            // Remove the grey class from all roster members
+            const rosterMembers = document.querySelectorAll('.member-slot');
+            rosterMembers.forEach(m => m.classList.remove('is-selected'));
         }
 
     </script>
