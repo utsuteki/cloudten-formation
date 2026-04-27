@@ -16,6 +16,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            /* Prevents the 'pull-to-refresh' gesture from interrupting your drag */
+            overscroll-behavior-y: contain;
         }
 
         h1, h2 {
