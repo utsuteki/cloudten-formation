@@ -173,9 +173,20 @@
         }
 
         /* --- Admin Controls (Reset) --- */
-        #controls {
+       #controls {
             margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap; /* Allows the input to drop to a second line on small phones */
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            width: 95%;
         }
+        
+        #formation-title-input {
+            flex-grow: 1; /* Allows the input to fill available space */
+            max-width: 400px;
+}
         button {
             padding: 10px 20px;
             font-size: 16px;
@@ -200,8 +211,12 @@
             <button onclick="resetFormation()">Reset Formation</button>
             <button onclick="downloadFormation()" style="background-color: #4CAF50; margin-left: 10px;">Download PNG</button>
             </div>
+            <input type="text" id="formation-title-input" placeholder="Enter Formation Title..." oninput="updateTitle(this.value)" style="margin-left: 15px; padding: 10px; border-radius: 5px; border: 1px solid #ccc; width: 250px;">
 
     <div id="formation-canvas">
+
+        <div id="canvas-title-display" style="text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 20px; color: #333; min-height: 30px;"></div>
+        
         <div class="row-wrapper">
             <div class="row-label">3rd<br>Row</div>
             <div class="formation-row" data-row-id="3"></div>
@@ -405,15 +420,21 @@ function getDragAfterElement(container, x) {
 }
 
         /* --- CONTROL FUNCTION --- */
+        function updateTitle(value) {
+    const display = document.getElementById('canvas-title-display');
+    display.innerText = value;
+}
         function resetFormation() {
-            // Clear the rows
-            const rows = document.querySelectorAll('.formation-row');
-            rows.forEach(row => row.innerHTML = '');
-        
-            // Remove the grey class from all roster members
-            const rosterMembers = document.querySelectorAll('.member-slot');
-            rosterMembers.forEach(m => m.classList.remove('is-selected'));
-        }
+    const rows = document.querySelectorAll('.formation-row');
+    rows.forEach(row => row.innerHTML = '');
+    
+    const rosterMembers = document.querySelectorAll('.member-slot');
+    rosterMembers.forEach(m => m.classList.remove('is-selected'));
+
+    // Clear the title
+    document.getElementById('formation-title-input').value = '';
+    document.getElementById('canvas-title-display').innerText = '';
+}
     
     function downloadFormation() {
     const canvas = document.getElementById('formation-canvas');
@@ -434,6 +455,7 @@ function getDragAfterElement(container, x) {
         link.click();
     });
 }
+    
     </script>
 </body>
 </html>
