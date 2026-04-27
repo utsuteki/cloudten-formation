@@ -53,12 +53,15 @@
         }
 
         /* Styling for members already in the formation */
-        .member-slot.is-selected {
-            opacity: 0.25;
-            filter: none;
-            pointer-events: none; /* Prevents dragging them again */
+       .member-slot.roster-member.is-selected {
+            opacity: 0.2; /* Much lower opacity makes it look paler against the white background */
+            filter: none; /* Removes any previous brightness filters */
+            pointer-events: none; 
             cursor: not-allowed;
-            transition: opacity 0.3s ease; /* Makes the fade-out look smooth */
+        }
+        .is-selected img {
+            user-select: none;
+            -webkit-user-drag: none;
         }
 
         .member-slot:hover {
