@@ -266,19 +266,16 @@
             this.classList.remove('drag-over');
         }
 
-        function handleDrop(e) {
+       function handleDrop(e) {
             e.preventDefault();
             this.classList.remove('drag-over');
         
             if (!currentlyDraggedId) return;
         
-            // Find the original member in the ROSTER (the bottom list)
+            // Find the original member in the bottom roster
             const rosterMember = document.getElementById(currentlyDraggedId);
             
-            // If it's already greyed out, stop here
-            if (rosterMember.classList.contains('is-selected')) return;
-        
-            // 1. Mark the roster member as selected (turns it grey)
+            // 1. Mark the roster member as selected (this triggers the pale CSS)
             rosterMember.classList.add('is-selected');
         
             const memberData = allMembers.find(m => m.id === currentlyDraggedId);
@@ -286,9 +283,9 @@
             
             formationMemberElement.setAttribute('draggable', 'false');
             
-            // 2. IMPORTANT: When removing from formation, turn the color back on!
+            // 2. When you click the formation image to remove it:
             formationMemberElement.onclick = function() {
-                rosterMember.classList.remove('is-selected'); // Remove grey
+                rosterMember.classList.remove('is-selected'); // Restore full color
                 this.remove(); // Remove from row
             };
         
