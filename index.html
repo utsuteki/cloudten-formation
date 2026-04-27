@@ -23,11 +23,11 @@
 
         /* --- Formation Area (The "Canvas") --- */
         #formation-canvas {
-            width: 90%;
-            max-width: 1000px;
-            min-height: 400px;
+            width: 95%;
+            max-width: 1100px;
+            min-height: 300px;
             background-color: white;
-            border: 2px dashed #b0bec5;
+            border: 2px solid #b0bec5;
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 30px;
@@ -35,14 +35,14 @@
 
             /* KEY: We force a 3-row layout structure using CSS Grid */
             display: grid;
-            grid-template-rows: repeat(3, 360px);
+            grid-template-rows: repeat(3, min-content);
             gap: 15px; /* Space between rows */
         }
 
         /* --- Member Slot (General definition) --- */
         .member-slot {
-            width: 250px; /* Match the original width and height */
-            height: 344px;
+            width: 100px; /* Match the original width and height */
+            height: auto;
             border-radius: 0px;
             overflow: hidden;
             display: flex;
@@ -58,7 +58,8 @@
 
         .member-slot img {
             width: 100%;
-            height: 100%;
+            height: auto;
+            display: block;
             object-fit: contain; /* This ensures the full image is visible without cropping */
         }
 
